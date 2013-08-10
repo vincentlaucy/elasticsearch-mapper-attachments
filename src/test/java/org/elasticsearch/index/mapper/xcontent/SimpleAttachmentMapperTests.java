@@ -98,7 +98,7 @@ public class SimpleAttachmentMapperTests {
 		assertThat(
 				doc.get(docMapper.mappers().smartName("file.checksum").mapper()
 						.names().indexName()),
-				not("b2d085bdb261cb2c56d8ba10d79175e38c0acd0d429afe19a4610eddee3b06fe"));
+				not("82c61c54275982e72e1cfb13e4e3bba3e26b3da0"));
 		//Suprisingly, it can still get the EXIF. checksum is different but others are the same
 	}
 
@@ -212,7 +212,7 @@ public class SimpleAttachmentMapperTests {
 		assertThat(
 				doc.get(docMapper.mappers().smartName("file.checksum").mapper()
 						.names().indexName()),
-				equalTo("b2d085bdb261cb2c56d8ba10d79175e38c0acd0d429afe19a4610eddee3b06fe"));
+				equalTo("82c61c54275982e72e1cfb13e4e3bba3e26b3da0"));
 
 		assertThat(
 		// .getField("file.checksumTook").numericValue()

@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Random;
+import java.util.zip.GZIPOutputStream;
 
 import org.elasticsearch.common.bytes.BytesReference;
 import org.junit.BeforeClass;
@@ -119,22 +120,7 @@ public class CreateSmileAndBase64BenchmarkTests {
 				.endObject().bytes();
 		byte[] bytes = json.toBytes();
 
-		// String string = new String(bytes, "utf-8");
-
-		// String string = smileBuilder().startObject().field("_id", 1)
-		// .startObject("file").field("content", jpegSource).endObject()
-		// .endObject().string();
-		// System.out.println(string);
-
-		// System.out.println(string);
-		// only reference
-		// BytesStreamInput bytesStreamInput = new BytesStreamInput(json);
-		// String bufferFromStream =
-		// TikaTest.getBufferFromStream(bytesStreamInput);
-
-		// bytesStreamInput.
-		// String buffer = getBufferFromStream(bytesStreamInput);
-
 	}
 
+	
 }

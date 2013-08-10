@@ -72,7 +72,7 @@ import org.elasticsearch.index.mapper.core.StringFieldMapper;
 
 import ucar.unidata.util.StringUtil;
 import vincent.FileMeta;
-import vincent.SHACalculator;
+import vincent.SHA1Calculator;
 
 
 /**
@@ -386,11 +386,11 @@ public class AttachmentMapper implements Mapper {
 		// added vincent
 		this.imageExifTikaMetaMapper = imageExifTikaMetaMapper;
 		this.fileMetaMapper = fileMetaMapper;
-		this.useSyncChecksumCalculation = DEFAULT_USE_SYNC_HASHING;
+		this.calculateChecksum = DEFAULT_USE_SYNC_HASHING;
 
 	}
 
-	private final boolean useSyncChecksumCalculation;
+	private final boolean calculateChecksum;
 
 	@Override
 	public String name() {
@@ -596,9 +596,9 @@ public class AttachmentMapper implements Mapper {
 		ExecutorService pool = Executors.newFixedThreadPool(2);
 		Future future = pool.submit(new ParsingThread(pipedIs, metadata,
 				indexedChars));
-		Future hashfuture = null;
-		if (useSyncChecksumCalculation) {
-			hashfuture = pool.submit(new CalcualteChecksumThread(pipedIs2));
+		Future checksumFuture = null;
+		if (calculateChecksum) {
+			checksumFuture = pool.submit(new CalcualteChecksumThread(pipedIs2));
 		}
 		// future.get();
 		// content = parser.binaryValue();
@@ -613,8 +613,8 @@ public class AttachmentMapper implements Mapper {
 		System.out.println("main thread finish read" + readBinaryValue);
 		ParseResult parseResult = (ParseResult) future.get(10 * 100, TimeUnit.SECONDS);
 		CalcualteChecksumResult checksumResult = null;
-		if (useSyncChecksumCalculation && hashfuture != null) {
-			checksumResult = (CalcualteChecksumResult) hashfuture.get(10 * 100,
+		if (calculateChecksum && checksumFuture != null) {
+			checksumResult = (CalcualteChecksumResult) checksumFuture.get(10 * 100,
 					TimeUnit.SECONDS);
 			System.out.println(checksumResult.checksum);
 		}
@@ -774,22 +774,16 @@ public class AttachmentMapper implements Mapper {
 
 		@Override
 		public Object call() throws Exception {
-			// TODO Auto-generated method stub
-
 			System.out.println("Calculate Checksum");
 			long calculatedChecksumStart = System.currentTimeMillis();
-			// FastByteArrayInputStream checkSumStream = new
-			// FastByteArrayInputStream(
-			// content);
 			long calculateChecksumTook = 0;
 			String calculatedChecksum = "";
 			try {
-				calculatedChecksum = SHACalculator.calculateChecksum(is);
+				calculatedChecksum = SHA1Calculator.calculateChecksum(is);
 				calculateChecksumTook = System.currentTimeMillis()
 						- calculatedChecksumStart;
 				System.out.println(calculateChecksumTook);
 			} catch (NoSuchAlgorithmException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			System.out.println("check sum done");
