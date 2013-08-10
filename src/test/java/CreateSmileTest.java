@@ -1,10 +1,10 @@
-import static org.elasticsearch.common.io.Streams.copyToBytesFromClasspath;
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 import static org.elasticsearch.common.xcontent.XContentFactory.smileBuilder;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Random;
 
 import org.elasticsearch.common.bytes.BytesReference;
 import org.junit.BeforeClass;
@@ -43,15 +43,26 @@ public class CreateSmileTest {
 
 	@Parameters //Executed before class
 	public static Collection data() throws IOException {
-		byte[] mediumJpegSource = copyToBytesFromClasspath("/dataset/medium_image.jpg");
-		byte[] largeJpegSource = copyToBytesFromClasspath("/dataset/large_image.jpg");
-		byte[] largeFileSource = copyToBytesFromClasspath("/dataset/large_file.tar.gz");
-		System.out.println("mediumjpegSource Length" + mediumJpegSource.length);
-		System.out.println("largeJpegSource Length" + largeJpegSource.length);
-		System.out.println("largeFileSource Length" + largeFileSource.length); //200MB
+//		byte[] mediumJpegSource = copyToBytesFromClasspath("/dataset/medium_image.jpg");
+//		byte[] largeJpegSource = copyToBytesFromClasspath("/dataset/large_image.jpg");
+//		byte[] largeFileSource = copyToBytesFromClasspath("/dataset/large_file.tar.gz");
 		
-		return Arrays.asList(new Object[][] { 
-				{ mediumJpegSource } ,	{ largeJpegSource },{ largeFileSource } });
+		
+//		System.out.println("mediumByteSource Length" + mByteSource.length);
+//		System.out.println("largeByteSource Length" + lByteSource.length);
+//		System.out.println("xlargeByteSource Length" + xlByteSource.length); //200MB
+		int SIZE=3;
+		int[] size = new int[]{1024*1024, 1024*1024*10, 1024*1024*100};
+		Object[][] data = new Object[size.length][];
+		
+		for(int i=0;i<SIZE;i++){
+			byte[] b = new byte[size[i]] ;
+		new Random().nextBytes(b);
+		data[i]=new Object[]{b};
+		}
+		
+		
+		return Arrays.asList(data);
 
 	}
 	// not Gc by junit before execution
