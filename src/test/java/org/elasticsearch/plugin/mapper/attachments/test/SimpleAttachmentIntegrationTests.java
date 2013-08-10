@@ -19,6 +19,22 @@
 
 package org.elasticsearch.plugin.mapper.attachments.test;
 
+import static org.elasticsearch.client.Requests.clusterHealthRequest;
+import static org.elasticsearch.client.Requests.countRequest;
+import static org.elasticsearch.client.Requests.createIndexRequest;
+import static org.elasticsearch.client.Requests.deleteIndexRequest;
+import static org.elasticsearch.client.Requests.indexRequest;
+import static org.elasticsearch.client.Requests.putMappingRequest;
+import static org.elasticsearch.client.Requests.refreshRequest;
+import static org.elasticsearch.common.io.Streams.copyToBytesFromClasspath;
+import static org.elasticsearch.common.io.Streams.copyToStringFromClasspath;
+import static org.elasticsearch.common.settings.ImmutableSettings.settingsBuilder;
+import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
+import static org.elasticsearch.index.query.QueryBuilders.fieldQuery;
+import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
 import java.io.IOException;
 
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
@@ -29,18 +45,11 @@ import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.common.network.NetworkUtils;
 import org.elasticsearch.index.mapper.MapperParsingException;
 import org.elasticsearch.node.Node;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.testng.annotations.*;
-
-import static org.elasticsearch.client.Requests.*;
-import static org.elasticsearch.common.io.Streams.copyToBytesFromClasspath;
-import static org.elasticsearch.common.io.Streams.copyToStringFromClasspath;
-import static org.elasticsearch.common.settings.ImmutableSettings.settingsBuilder;
-import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
-import static org.elasticsearch.index.query.QueryBuilders.fieldQuery;
-import static org.elasticsearch.node.NodeBuilder.nodeBuilder;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 
 /**
  *
@@ -64,7 +73,7 @@ public class SimpleAttachmentIntegrationTests {
         node.close();
     }
 
-    @BeforeMethod
+    @Before
     public void createIndex() {
         logger.info("creating index [test]");
         node.client().admin().indices().create(createIndexRequest("test").settings(settingsBuilder().put("index.numberOfReplicas", 0))).actionGet();
@@ -75,7 +84,7 @@ public class SimpleAttachmentIntegrationTests {
         assertThat(clusterHealth.getStatus(), equalTo(ClusterHealthStatus.GREEN));
     }
 
-    @AfterMethod
+    @After
     public void deleteIndex() {
         logger.info("deleting index [test]");
         node.client().admin().indices().delete(deleteIndexRequest("test")).actionGet();
