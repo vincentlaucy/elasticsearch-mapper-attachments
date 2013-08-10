@@ -30,7 +30,7 @@
     </parent>
 
     <properties>
-        <elasticsearch.version>0.90.0.Beta1</elasticsearch.version>
+        <elasticsearch.version>0.90.3</elasticsearch.version>
     </properties>
 
     <repositories>
@@ -57,13 +57,20 @@
     </repositories>
 
     <dependencies>
-        <dependency>
+         <dependency>
             <groupId>org.elasticsearch</groupId>
             <artifactId>elasticsearch</artifactId>
             <version>${elasticsearch.version}</version>
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+	<groupId>commons-io</groupId>
+	<artifactId>commons-io</artifactId>
+	<version>2.4</version>
+</dependency>
+            
+        
         <dependency>
             <groupId>org.apache.tika</groupId>
             <artifactId>tika-parsers</artifactId>
@@ -79,6 +86,21 @@
         </dependency>
 
         <dependency>
+    <groupId>com.carrotsearch</groupId>
+    <artifactId>junit-benchmarks</artifactId>
+    <version>0.7.0</version>
+    <scope>test</scope>
+</dependency>
+
+           <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+
+        </dependency> 
+        
+<!--         <dependency>
             <groupId>org.testng</groupId>
             <artifactId>testng</artifactId>
             <version>6.8</version>
@@ -93,8 +115,22 @@
                     <artifactId>junit</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency> -->
+
+                <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>2.2.2</version>
+            <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-smile</artifactId>
+            <version>2.2.2</version>
+            <scope>test</scope>
+        </dependency>
+        
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>

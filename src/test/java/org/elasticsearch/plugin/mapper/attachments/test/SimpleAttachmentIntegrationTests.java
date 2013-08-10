@@ -19,6 +19,8 @@
 
 package org.elasticsearch.plugin.mapper.attachments.test;
 
+import java.io.IOException;
+
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthStatus;
 import org.elasticsearch.action.count.CountResponse;
@@ -27,6 +29,7 @@ import org.elasticsearch.common.logging.Loggers;
 import org.elasticsearch.common.network.NetworkUtils;
 import org.elasticsearch.index.mapper.MapperParsingException;
 import org.elasticsearch.node.Node;
+import org.junit.Test;
 import org.testng.annotations.*;
 
 import static org.elasticsearch.client.Requests.*;
@@ -42,7 +45,6 @@ import static org.hamcrest.Matchers.equalTo;
 /**
  *
  */
-@Test
 public class SimpleAttachmentIntegrationTests {
 
     private final ESLogger logger = Loggers.getLogger(getClass());
@@ -77,6 +79,24 @@ public class SimpleAttachmentIntegrationTests {
     public void deleteIndex() {
         logger.info("deleting index [test]");
         node.client().admin().indices().delete(deleteIndexRequest("test")).actionGet();
+    }
+    
+    @Test
+    public void testFromRestForImage() throws IOException{
+//        String mapping = copyToStringFromClasspath("/org/elasticsearch/index/mapper/xcontent/test-mapping.json");
+//        byte[] html = copyToBytesFromClasspath("/org/elasticsearch/index/mapper/xcontent/testXHTML.html");
+//
+//        node.client().admin().indices().putMapping(putMappingRequest("test").type("person").source(mapping)).actionGet();
+//
+//        node.client().index(indexRequest("test").type("person")
+//                .source(jsonBuilder().startObject().field("file", html).endObject())).actionGet();
+//        node.client().admin().indices().refresh(refreshRequest()).actionGet();
+//
+//        CountResponse countResponse = node.client().count(countRequest("test").query(fieldQuery("file.title", "test document"))).actionGet();
+//        assertThat(countResponse.getCount(), equalTo(1l));
+//
+//        countResponse = node.client().count(countRequest("test").query(fieldQuery("file", "tests the ability"))).actionGet();
+//        assertThat(countResponse.getCount(), equalTo(1l));
     }
 
     @Test
@@ -140,7 +160,7 @@ public class SimpleAttachmentIntegrationTests {
      * <br/>We throw a nicer exception when no content is provided
      * @throws Exception
      */
-    @Test(expectedExceptions = MapperParsingException.class)
+    @Test(expected = MapperParsingException.class)
     public void testNoContent() throws Exception {
         String mapping = copyToStringFromClasspath("/org/elasticsearch/index/mapper/xcontent/test-mapping.json");
 
