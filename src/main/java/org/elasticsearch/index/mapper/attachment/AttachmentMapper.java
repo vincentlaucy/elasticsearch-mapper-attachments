@@ -103,8 +103,6 @@ public class AttachmentMapper implements Mapper {
 	final static ESLogger logger = ESLoggerFactory
 			.getLogger("vincent-attachment");
 
-	// final static boolean DEFAULT_USE_SYNC_HASHING = false;
-
 	final static boolean DEFAULT_USE_SYNC_HASHING = true;
 	public static final String CONTENT_TYPE = "attachment";
 
@@ -189,7 +187,6 @@ public class AttachmentMapper implements Mapper {
 		public AttachmentMapper build(BuilderContext context) {
 			ContentPath.Type origPathType = context.path().pathType();
 			context.path().pathType(pathType);
-
 			// create the content mapper under the actual name
 			StringFieldMapper contentMapper = contentBuilder.build(context);
 
@@ -227,7 +224,6 @@ public class AttachmentMapper implements Mapper {
 			FileMetaMapper fileMetaMapper = new FileMetaMapper(
 					"file_meta_post_parse", checksumMapper, checksumTookMapper,
 					parseTookMapper);
-			// ////////
 			context.path().remove();
 
 			context.path().pathType(origPathType);
@@ -242,8 +238,6 @@ public class AttachmentMapper implements Mapper {
 				defaultIndexedChars = DEFAULT_INDEXED_CHARS;
 			}
 
-			// will map to root
-			// should add path "image"
 
 			return new AttachmentMapper(name, pathType, defaultIndexedChars,
 					contentMapper, dateMapper, titleMapper, nameMapper,
@@ -420,17 +414,12 @@ public class AttachmentMapper implements Mapper {
 		if (token == XContentParser.Token.VALUE_STRING || token == XContentParser.Token.VALUE_EMBEDDED_OBJECT) {
 			parseAndChecksumResults = parseAndCalculateChecksumWithThreads(parser, indexedChars);
 		}else {
-			// default dont accept those fields like keywords
 			String currentFieldName = null;
 			while ((token = parser.nextToken()) != XContentParser.Token.END_OBJECT) {
 				if (token == XContentParser.Token.FIELD_NAME) {
 					currentFieldName = parser.currentName();
 					System.out.println(currentFieldName);
 				} else {
-					// is string check -> only if base64?
-					// for smile it is "VALUE_EMBEDDED_OBJECT"
-					logger.info("token:" + token);
-//					isString(token) &&
 					if ( "content".equals(currentFieldName)) {
 						//for both smile and string
 						parseAndChecksumResults = parseAndCalculateChecksumWithThreads(parser, indexedChars);
@@ -445,20 +434,10 @@ public class AttachmentMapper implements Mapper {
 							&& ("_indexed_chars".equals(currentFieldName) || "_indexedChars"
 									.equals(currentFieldName))) {
 						indexedChars = parser.intValue();
-					} else {// vincent add others into map as quick hack to
-						
+					} else {
 						logger.info("non-default mapping:" + currentFieldName);
-						logger.info("token:" + token);
-						System.out.println("token:"+token);
 						if ("content".equals(currentFieldName)) {
-							// content = parser.binaryValue(); // smile
-//							System.out.println(content);
-							//support later
-//							fieldMapping.put(currentFieldName, content);
 						} else {
-							// // support
-							// // more vaues.
-							// //text, bool,b
 							Object object = parser.objectText();
 							System.out.println(object);
 							// content = parser.binaryValue();
@@ -495,11 +474,6 @@ public class AttachmentMapper implements Mapper {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// Throw clean exception when no content is provided Fix #23
-//		if (content == null) {
-//			throw new MapperParsingException("No content is provided.");
-//		}
 		 if(parseAndChecksumResults==null){
 			 throw new IOException("parse failed, result is null");
 		 }
@@ -513,16 +487,9 @@ public class AttachmentMapper implements Mapper {
 		if (name != null) {
 			metadata.add(Metadata.RESOURCE_NAME_KEY, name);
 		}
-		// InputStream stream = new ByteArrayInputStream(content);
-//		BytesStreamInput stream = new BytesStreamInput(content, false);
-		long calculateChecksumTook = 0L;
-		long parseContentTook = 0L;
-
-			// new BytesStreamInput(commitPointData, false)
 
 			// used same interface for image / non-image as decouple detection
-			// logic to tika on the
-			// fly. but check aftewards
+			// logic to detect done by tika on the fly. but check aftewards
 			// logger.info("parsedContent" + parsedContent);
 
 		
@@ -560,7 +527,6 @@ public class AttachmentMapper implements Mapper {
 		context.externalValue("ImKeyWord");
 		keywordsMapper.parse(context);
 
-		System.out.println(context);
 		context.externalValue(metadata.get(Metadata.CONTENT_TYPE));
 		contentTypeMapper.parse(context);
 
@@ -600,9 +566,6 @@ public class AttachmentMapper implements Mapper {
 		if (calculateChecksum) {
 			checksumFuture = pool.submit(new CalcualteChecksumThread(pipedIs2));
 		}
-		// future.get();
-		// content = parser.binaryValue();
-
 		TeeOutputStream tos = new TeeOutputStream(pipedOs, pipedOs2);
 		int readBinaryValue = jsonParser.readBinaryValue(tos);
 		// tee stream perhaps
@@ -838,13 +801,9 @@ public class AttachmentMapper implements Mapper {
 			String parsedContent = tika().parseToString(is, metadata,
 					indexedChars);
 			//
-			System.out.println(is.available());
 			System.out.println("parse completed");
 			IOUtils.closeQuietly(is);
 			long took = System.currentTimeMillis() - parseContentStart;
-			System.out.println(took);
-			// Metadata.CONTENT_TYPE
-
 			ParseResult parseResult = new ParseResult(metadata, parsedContent,
 					took);
 			// TODO Auto-generated method stub

@@ -55,11 +55,10 @@ public class CreateSmileAndBase64BenchmarkTests {
 //		System.out.println("mediumByteSource Length" + mByteSource.length);
 //		System.out.println("largeByteSource Length" + lByteSource.length);
 //		System.out.println("xlargeByteSource Length" + xlByteSource.length); //200MB
-		int SIZE=3;
 		int[] size = new int[]{1024*1024, 1024*1024*10, 1024*1024*100};
 		Object[][] data = new Object[size.length][];
 		
-		for(int i=0;i<SIZE;i++){
+		for(int i=0;i< size.length;i++){
 			byte[] b = new byte[size[i]] ;
 		new Random().nextBytes(b);
 		data[i]=new Object[]{b};

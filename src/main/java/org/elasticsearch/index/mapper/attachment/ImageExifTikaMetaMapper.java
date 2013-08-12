@@ -100,7 +100,9 @@ public class ImageExifTikaMetaMapper implements Mapper {
 			for (MetadataField<?> metadataField : exifMetadataList) {
 				Object tikaFieldValue = tikaMetadata
 						.get(metadataField.tikaFieldName);
-				System.out.println(metadataField.tikaFieldName);
+				System.out.print(metadataField.tikaFieldName);
+				System.out.print(":");
+				System.out.println(tikaFieldValue);
 //				System.out.println(tikaFieldValue.getClass());
 				//specialized. by type Field check..against <?>?
 //				if("Creation-Date".equals(metadataField.tikaFieldName)){
